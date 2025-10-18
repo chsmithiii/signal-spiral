@@ -1,10 +1,9 @@
 # Signal Spiral
-Turn any recurring time-series into a seasonality spiral (month/week/day). Built for recruiting, product, and ops metrics.
 <beginning>
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 <end>
-
+Turn any recurring time-series into a seasonality spiral (month/week/day). Built for recruiting, product, and ops metrics.
 
 ## Examples this fits
 - Recruiting: applications per week, interviews per month, offer acceptance rate, time-to-hire.
