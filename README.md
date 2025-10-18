@@ -8,3 +8,8 @@ Turn any recurring time-series into a seasonality spiral (month/week/day). Built
 
 ## Data format
 CSV with at least a date column and a numeric value column.
+
+```csv
+date,value
+2024-01-01,123
+2024-02-01,140
