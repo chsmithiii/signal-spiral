@@ -13,3 +13,19 @@ CSV with at least a date column and a numeric value column.
 date,value
 2024-01-01,123
 2024-02-01,140
+```
+
+## Quick start
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python spiral.py --csv data/example.csv --date-col date --value-col value --freq M --title "Applications per Month"
+```
+
+## Options
+- `--freq {M,W,D,Q}`: monthly/weekly/daily/quarterly angle.
+- `--agg {sum,mean,count}`: aggregation if you supply dense data.
+- `--transform {none,index100,yoy,zscore,rolling}` + `--rolling-window N`
+- `--out path.png`: output file name.
+
+Outputs `out_spiral.png` by default.
