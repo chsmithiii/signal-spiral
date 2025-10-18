@@ -1,7 +1,4 @@
-# Signal Spiral 
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
+# Signal Spiral [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 
 Turn any recurring time-series into a seasonality spiral (month/week/day). Built for recruiting, product, and ops metrics.
 
