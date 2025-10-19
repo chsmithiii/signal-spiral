@@ -58,11 +58,11 @@ def apply_transform(s: pd.Series, freq: str, transform: str, window: int) -> pd.
 def main():
     args = parse_args()
 
-    # Load & normalize column names
+    # 1) Load CSV and normalize column names
     df = pd.read_csv(args.csv, parse_dates=[args.date_col]).rename(columns={args.date_col: "date"})
     df = df.sort_values("date")
 
-    # Determine value column
+    # 2) Decide value column / counting mode
     if args.agg == "count" and args.value_col is None:
         df["value"] = 1.0
         valcol = "value"
@@ -70,10 +70,9 @@ def main():
         if args.value_col is None:
             raise SystemExit("--value-col is required unless --agg=count")
         valcol = args.value_col
-        # Ensure numeric; coerce errors to NaN then fill 0 for aggregation
         df[valcol] = pd.to_numeric(df[valcol], errors="coerce").fillna(0.0)
 
-    # Resample to desired frequency
+    # 3) Resample to chosen frequency
     rule = {"M":"MS", "W":"W-MON", "D":"D", "Q":"QS"}[args.freq]
     resampler = df.set_index("date")[valcol].resample(rule)
     if args.agg == "sum":
@@ -86,28 +85,28 @@ def main():
     s = s.dropna()
     s = apply_transform(s, args.freq, args.transform, args.rolling_window)
 
+    # 4) Prepare for plotting
     out = s.reset_index().rename(columns={valcol: "value"})
     out["date"] = pd.to_datetime(out["date"])
 
-    # Polar coordinates
     theta, ticks, labels = angle_and_labels(out["date"], args.freq)
     vals = out["value"].to_numpy()
     vmin, vmax = np.nanmin(vals), np.nanmax(vals)
     rng = (vmax - vmin) if (vmax - vmin) != 0 else 1.0
     r = (vals - vmin) / rng + 0.5  # keep inner radius off center
 
-    # Plot
+    # 5) Plot spiral
     plt.figure(figsize=(8,8))
-ax = plt.subplot(111, polar=True)
-ax.plot(theta, r)
-ax.set_title(args.title)
-ax.set_yticklabels([])
-if len(labels) <= 12:
-    ax.set_xticks(ticks)
-    ax.set_xticklabels(labels)
-plt.tight_layout()
-plt.savefig(args.out, dpi=180)
-print(f"Saved {args.out}")
+    ax = plt.subplot(111, polar=True)
+    ax.plot(theta, r)
+    ax.set_title(args.title)
+    ax.set_yticklabels([])
+    if len(labels) <= 12:
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(labels)
+    plt.tight_layout()
+    plt.savefig(args.out, dpi=180)
+    print(f"Saved {args.out}")
 
 if __name__ == "__main__":
     main()
