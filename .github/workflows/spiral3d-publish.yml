@@ -13,21 +13,17 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: pip install -r requirements.txt
       - run: python spiral3d.py --csv data/example.csv --date-col date --value-col value --title "3D Spiral (Monthly)" --out out_spiral3d.png
-      - name: Move image into assets
-        run: |
-          mkdir -p assets
-          mv -f out_spiral3d.png assets/out_spiral3d.png
-      - name: Commit image if it changed
+      - name: Commit image to assets
         env:
           AUTHOR_NAME: "C. Hakeem Smith"
+          # Replace with your GitHub noreply email from Settings → Emails
           AUTHOR_EMAIL: "48100389+chsmithiii@users.noreply.github.com"
         run: |
-          if git diff --quiet -- assets/out_spiral3d.png; then
-            echo "No changes to commit."
-            exit 0
-          fi
+          set -e
+          mkdir -p assets
+          mv -f out_spiral3d.png assets/out_spiral3d.png
           git config user.name "$AUTHOR_NAME"
           git config user.email "$AUTHOR_EMAIL"
           git add assets/out_spiral3d.png
-          git commit -m "docs(signal-spiral): publish 3D spiral example"
+          git commit -m "docs(signal-spiral): publish 3D spiral example" || echo "Nothing to commit"
           git push
