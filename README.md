@@ -2,6 +2,14 @@
 
 Turn any recurring time-series into a seasonality spiral (month/week/day). Built for recruiting, product, and ops metrics.
 
+<p align="center">
+  <img src="assets/out_spiral3d.png" width="520" alt="3D spiral example (month angle, value radius, time on Z)">
+</p>
+
+> Now includes a true 3D climate-style spiral (`spiral3d.py`).  
+To update the image: Actions → **spiral3d-publish** → Run workflow.
+
+
 ## Examples this fits
 - Recruiting: applications per week, interviews per month, offer acceptance rate, time-to-hire.
 - Product/Growth: signups per week, DAU/WAU/MAU, retention cohorts.
