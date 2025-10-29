@@ -18,14 +18,13 @@ jobs:
           python - <<'PY'
           import os, csv, json, urllib.request
           from datetime import datetime, timezone
-          from dateutil.relativedelta import relativedelta
 
           # Config: change these two if you want a different wiki page or project
           TITLE = "Amazon_(company)"         # Wikipedia article title with underscores
           PROJECT = "en.wikipedia"           # language.project
           OUTPATH = "data/wikiviews_amazon_company_monthly.csv"
 
-          # Compute start (2019-01) to current month inclusive
+          # 2019-01 to current month (inclusive)
           now = datetime.now(timezone.utc)
           start = datetime(2019, 1, 1, tzinfo=timezone.utc)
           end = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
@@ -43,6 +42,7 @@ jobs:
             t = it["timestamp"]              # e.g., 2025010100
             y, m = int(t[:4]), int(t[4:6])
             rows.append((f"{y:04d}-{m:02d}-01", str(it["views"])))
+          
           os.makedirs("data", exist_ok=True)
           with open(OUTPATH, "w", newline="", encoding="utf-8") as f:
             csv.writer(f).writerows(rows)
