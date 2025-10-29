@@ -1,0 +1,66 @@
+name: wikiviews-monthly
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "17 5 1 * *"   # run monthly on the 1st at 05:17 UTC
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Fetch monthly pageviews and write CSV
+        run: |
+          python - <<'PY'
+          import os, csv, json, urllib.request
+          from datetime import datetime, timezone
+          from dateutil.relativedelta import relativedelta
+
+          # Config: change these two if you want a different wiki page or project
+          TITLE = "Amazon_(company)"         # Wikipedia article title with underscores
+          PROJECT = "en.wikipedia"           # language.project
+          OUTPATH = "data/wikiviews_amazon_company_monthly.csv"
+
+          # Compute start (2019-01) to current month inclusive
+          now = datetime.now(timezone.utc)
+          start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+          end = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+
+          def ts(d): return d.strftime("%Y%m0100")
+          url = (f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/"
+                 f"{PROJECT}/all-access/user/{TITLE}/monthly/{ts(start)}/{ts(end)}")
+
+          with urllib.request.urlopen(url) as r:
+            data = json.load(r)
+
+          items = data.get("items", [])
+          rows = [("date", "views")]
+          for it in items:
+            t = it["timestamp"]              # e.g., 2025010100
+            y, m = int(t[:4]), int(t[4:6])
+            rows.append((f"{y:04d}-{m:02d}-01", str(it["views"])))
+          os.makedirs("data", exist_ok=True)
+          with open(OUTPATH, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerows(rows)
+
+          print(f"Wrote {len(rows)-1} rows to {OUTPATH}")
+          PY
+      - name: Commit data if changed
+        env:
+          AUTHOR_NAME: "${{ github.actor }}"
+          AUTHOR_EMAIL: "${{ github.actor }}@users.noreply.github.com"
+        run: |
+          set -e
+          if git diff --quiet -- data/wikiviews_amazon_company_monthly.csv; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "$AUTHOR_NAME"
+          git config user.email "$AUTHOR_EMAIL"
+          git add data/wikiviews_amazon_company_monthly.csv
+          git commit -m "data(signal-spiral): update Wikimedia pageviews (Amazon company) monthly"
+          git push
