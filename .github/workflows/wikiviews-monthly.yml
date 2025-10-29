@@ -56,18 +56,32 @@ jobs:
 
           print(f"Wrote {len(rows)-1} rows to {OUTPATH}")
           PY
-      - name: Commit data if changed
+      - name: Commit data if changed (force-add)
         env:
           AUTHOR_NAME: "${{ github.actor }}"
           AUTHOR_EMAIL: "${{ github.actor }}@users.noreply.github.com"
         run: |
           set -e
-          if git diff --quiet -- data/wikiviews_amazon_company_monthly.csv; then
-            echo "No changes to commit."
-            exit 0
-          fi
+          ls -lah data || true
+          echo "Check .gitignore status:"
+          git check-ignore -v data/wikiviews_amazon_company_monthly.csv || true
+
           git config user.name "$AUTHOR_NAME"
           git config user.email "$AUTHOR_EMAIL"
-          git add data/wikiviews_amazon_company_monthly.csv
-          git commit -m "data(signal-spiral): update Wikimedia pageviews (Amazon company) monthly"
-          git push
+
+          # Force add in case data/ or *.csv is ignored
+          git add -f data/wikiviews_amazon_company_monthly.csv
+
+          # Only commit if something actually changed
+          if git diff --cached --quiet; then
+            echo "No staged changes to commit."
+          else
+            git commit -m "data(signal-spiral): update Wikimedia pageviews (Amazon company) monthly"
+            git push
+          fi
+
+      - name: Upload CSV as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wikiviews-amazon-company-monthly
+          path: data/wikiviews_amazon_company_monthly.csv
