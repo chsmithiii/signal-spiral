@@ -27,7 +27,7 @@ jobs:
           # 2019-01 to current month (inclusive)
           now = datetime.now(timezone.utc)
           start = datetime(2019, 1, 1, tzinfo=timezone.utc)
-          end = datetime(now.year, now.month, 1 tzinfo=timezone.utc)
+          end = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
 
           def ts(d): return d.strftime("%Y%m0100")
 
