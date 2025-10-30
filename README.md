@@ -6,8 +6,6 @@ Turn any recurring time-series into a seasonality spiral (month/week/day). Built
   <img src="assets/out_spiral3d.png" width="520" alt="3D spiral example (month angle, value radius, time on Z)">
 </p>
 
-> Now includes a true 3D climate-style spiral (`spiral3d.py`).  
-To update the image: Actions → **spiral3d-publish** → Run workflow.
 > ## Run on Wikimedia data (3D)
 ```bash
 python spiral3d.py --csv data/wikiviews_amazon_company_monthly.csv \
