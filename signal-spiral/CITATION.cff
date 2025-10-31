@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: If you use this repository, please cite it as below.
+title: Signal Spiral
+abstract: "True 3D climate-style spiral for recurring time series (month angle, value radius, time on Z)."
+authors:
+  - family-names: Smith
+    given-names: C. Hakeem
+    name-particle: ""
+    affiliation: "Analytics & Systems"
+    email: chsmithiii@gmail.com
+keywords:
+  - time series
+  - visualization
+  - seasonality
+  - analytics
+repository-code: https://github.com/chsmithiii/signal-spiral
+license: MIT
+version: "0.1.0"
+date-released: 2025-10-31
+preferred-citation:
+  type: software
+  title: Signal Spiral
+  authors:
+    - family-names: Smith
+      given-names: C. Hakeem
+  repository-code: https://github.com/chsmithiii/signal-spiral
+  url: https://github.com/chsmithiii/signal-spiral
+  notes: "3D spiral visualization for monthly/weekly/daily metrics."
